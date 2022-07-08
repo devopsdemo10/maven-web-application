@@ -84,7 +84,7 @@
 			<version>${spring.version}</version>
 		</dependency>
 		
-		<!-- provided dependencies -->
+		<!-- provided dependencies ooh ojj -->
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
