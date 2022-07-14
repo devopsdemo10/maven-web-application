@@ -1,73 +1,24 @@
-pipeline{
-                                                 
-agent any;
+node{
 
-tools{
+def mavenhome = tool name: "maven-3.8.6"
 
-maven 'maven3.6.3'
-
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '')), 
+[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([githubPush()])])
+stage('checkout'){
+git branch: 'uat', credentialsId: '2ca26487-f4d1-4171-a75d-ae3b6892c2f6', url: 'https://github.com/devopsdemo10/maven-web-application.git'
 }
-
-options{
-timestamps()
-
+stage('buiild'){
+sh "${mavenhome}/bin/mvn clean package"
 }
-
-stages{
-
-    stage('CheckOutCode'){
-	 steps{
-	   git branch: 'development', credentialsId: '347c3760-8e63-4289-9fe9-0a03f8442491', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
-	 }
-	}
-	
-	stage('Build'){
-	  steps{
-	  sh "mvn clean package"
-	  }
-	}
-  /*
-  stage('ExecuteSonarQubeReport'){
-	steps{
-	sh "mvn sonar:sonar"
-	}
-	}
-	
-	stage('UploadArtifactsIntoNexus'){
-	steps{
-	sh "mvn deploy"
-	}
-	}
-	
-	stage('DeployAppIntoTomcatServer'){
-	steps{
-	sshagent(['a2b944b0-d466-4676-8997-3658e2ab4fca']) {
-	 sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.213.0.19:/opt/apache-tomcat-9.0.41/webapps/"
-	}
-	}
-	}
-	*/
+stage('sonarqubereport'){
+sh "${mavenhome}/bin/mvn sonar:sonar"
 }
-
-	post{
-
-	  success{
-	    mail body: '''Build Over!.. Success
-
-Regards,
-Mithun Technologies,
-9980923226''', subject: 'Build Over...Successfull', to: 'devopstrainingblr@gmail.com'
-	  }
-	  
-	  failure{
-	     
-	  	    mail body: '''Build Over!.. Failed
-
-	  Regards,
-	  Mithun Technologies,
-	  9980923226''', subject: 'Build Over...Failed', to: 'devopstrainingblr@gmail.com'
-	  }
-	  
-	  
-	}
+stage('copytonexus'){
+sh "${mavenhome}/bin/mvn deploy"
+}
+stage('deploytotomcat'){
+sshagent(['9b9de740-0002-433d-84fa-95bfe6e60d39']) {
+  sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.43.121:/opt/apache-tomcat-9.0.64/webapps/"
+}
+}
 }
