@@ -1,0 +1,26 @@
+node{
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([githubPush()])])
+def mavenhome = tool name: "maven-3.8.6"
+
+echo "the node name is ${env.NODE_NAME}"
+echo "the build number is ${env.BUILD_NUMBER}"
+echo "the job name is ${env.JOB_NAME}"
+stage('checkoutcode'){
+git branch: 'qa', credentialsId: '2ca26487-f4d1-4171-a75d-ae3b6892c2f6', url: 'https://github.com/devopsdemo10/maven-web-application.git'
+}
+stage('build'){
+sh "${mavenhome}/bin/mvn clean package"
+}
+stage('sonarreports'){
+sh "${mavenhome}/bin/mvn sonar:sonar"
+}
+stage('buildmovetonexus'){
+sh "${mavenhome}/bin/mvn deploy"
+}
+stage('deplottotomcat'){
+    sshagent(['9b9de740-0002-433d-84fa-95bfe6e60d39']) {
+    sh "scp -o StrictHostKeyChecking=no  target/*.war ec2-user@172.31.43.121:/opt/apache-tomcat-9.0.64/webapps/"
+    }
+}
+}
