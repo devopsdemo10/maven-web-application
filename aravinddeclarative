@@ -7,7 +7,6 @@ label "aravind"
 triggers {
   githubPush()
 } 
-}
 options {
   buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '')
   timestamps()
