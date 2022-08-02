@@ -5,6 +5,7 @@ node('wallmart-node')
  
  properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
  
+ 
  stage('CheckoutCode')
  {
  git branch: 'development', credentialsId: '6773dc34-a3fd-44ec-b1ee-3d2f0aa9f346', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
