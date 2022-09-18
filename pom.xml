@@ -23,9 +23,9 @@
 		<log4j.version>1.2.17</log4j.version>
 		<!-- <sonar.host.url>http://172.31.44.141:9000/</sonar.host.url>
 		<sonar.login>admin</sonar.login>
-		<sonar.password>admin</sonar.password> -->
+		<sonar.password>Abis@321</sonar.password> -->
 		<sonar.host.url>http://172.31.44.141:9000</sonar.host.url>
-                <sonar.login>2ba0168a61042780edb425df33fc7c8c0a9d4b4c</sonar.login>
+                <sonar.login>45179e6705d2a2f69529fe7758a71caa37bd1b55</sonar.login>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
